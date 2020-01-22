@@ -1,0 +1,37 @@
+public class HRMSAddEmployeeTask extends CommonMethods{
+    @BeforeMethod
+    public void login() throws InterruptedException {
+        setUp("chrome", Constants.HMRS_URL);
+        Constants.logInHMRS();
+        driver.findElement(By.linkText("PIM")).click();
+    }
+    @Test   
+    public void verifyLabels() {
+        driver.findElement(By.linkText("Add Employee")).click();
+        WebElement label=driver.findElement(By.xpath("//label[text()='Full Name']"));
+        boolean nameDisplayed=label.isDisplayed();
+        SoftAssert softAssert=new SoftAssert();
+        softAssert.assertTrue(nameDisplayed, "Name Label Displayed");
+        
+        label=driver.findElement(By.xpath("//label[text()='Employee Id']"));
+        boolean IdDisplayed=label.isDisplayed();
+        softAssert.assertTrue(IdDisplayed, "Id Label Displayed");
+        
+        label=driver.findElement(By.xpath("//label[text()='Photograph']"));
+        boolean photoDisplayed=label.isDisplayed();
+        softAssert.assertTrue(photoDisplayed, "Photo Label Displayed");
+        
+        //add Employee
+        driver.findElement(By.id("firstName")).sendKeys("Anna ");
+        driver.findElement(By.id("lastName")).sendKeys("Maria");
+        driver.findElement(By.id("employeeId")).clear();
+        driver.findElement(By.id("btnSave")).click();
+        
+        boolean empAdded=driver.findElement(By.xpath("//div[@id='profile-pic']//h1")).isDisplayed();
+        softAssert.assertTrue(empAdded, "Employee is added succesfully");
+    }
+    @AfterMethod
+    public void tearDown() {
+        driver.quit();
+    }
+}
